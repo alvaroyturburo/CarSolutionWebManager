@@ -1,0 +1,22 @@
+<?page title="Administración" contentType="text/html;charset=UTF-8" automaticTimeout="false" ?>
+<borderlayout 	apply="org.zkoss.bind.BindComposer" 
+				viewModel="@id('vm') @init('com.empresas.control.index')"
+				hflex="1" vflex="1">
+	<north>
+		<menubar>
+			<menuitem 	label="Empresas"	onClick="@command('seleccionMenu', direccion='empresas')"/>
+			<menuitem 	label="Servicios"	onClick="@command('seleccionMenu', direccion='servicios')"/>
+			<menuitem 	label="otros"	onClick="@command('seleccionMenu', direccion='otros')"/>
+			<menuitem 	label="Salir"	/>
+		</menubar>
+	</north>
+	<center autoscroll="true">
+		<include src="@bind(vm.formularioActual)"/>
+	</center>
+	<south hflex="1" vflex="min">
+		<vbox hflex="1" align="center">
+			<label>Sistema de empresas</label>
+			<label>Autor: </label>
+		</vbox>
+	</south>
+</borderlayout>

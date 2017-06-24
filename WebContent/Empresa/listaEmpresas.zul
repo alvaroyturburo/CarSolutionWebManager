@@ -1,0 +1,63 @@
+<?page title="Empresas" contentType="text/html;charset=UTF-8" automaticTimeout="false" ?>
+<zk>
+	<vlayout vflex="1" hflex="1"
+	apply="org.zkoss.bind.BindComposer" 
+				viewModel="@id('vm') @init('com.empresas.control.ListaEmpresas')">
+		<toolbar>
+			<toolbarbutton 	label="Nueva Empresa" onClick="@command('nuevoEmpresa')"/>
+			<toolbarbutton 	label="Editar Empresa" onClick="@command('editarEmpresa')"/>
+			<toolbarbutton 	label="Eliminar Empresa" onClick="@command('eliminarEmpresa')"/>
+			<separator orient="vertical" width="100px" />
+		</toolbar>
+		<separator orient="horizontal"/>
+		<hlayout>
+			<separator orient="vertical"/>
+			<hlayout hflex="1">
+			<label 	value="Nombre Empresa:" 
+					style="color:black; font-size:12px; text-align: center;"/>
+			<textbox value="@bind(vm.textoBuscar)" hflex="1" />
+			<button label="Buscar"
+					onClick="@command('buscar')" />
+			<separator orient="vertical"/>
+			</hlayout>
+		</hlayout>
+		<separator orient="horizontal"/>
+		<hbox vflex="min" hflex="1" align="center">
+			<separator orient="vertical"/>
+			<label 	value="Lista de Empresas" hflex="1"
+					style="color:black; font-size:15px; text-align: center;"/>
+			<separator orient="vertical"/>
+		</hbox>
+		<hlayout vflex="1" hflex="1">
+			<separator orient="vertical"/>
+			<listbox model="@load(vm.empresas)" 
+					 selectedItem="@bind(vm.empresaSeleccionado)" 
+					 hflex="1" vflex="1">
+				<listhead>
+					<listheader label="Nombre"/>
+					<listheader label="Tipo de Empresa"/>
+					<listheader label="Provincia"/>
+					<listheader label="Canton"/>
+					<listheader label="Parroquia"/>
+					<listheader label="Direccion"/>
+					<listheader label="Teléfono"/>
+					<listheader label="Descripcion"/>
+				</listhead>
+				<template name="model">
+					<listitem>
+						<listcell label="@load(each.nombre)" />
+						<listcell label="@load(each.tipoEmpresa.descripcionTipoEmpresa)" />
+						<listcell label="@load(each.parroquia.canton.provincia.nombreProvincia)" />
+						<listcell label="@load(each.parroquia.canton.nombreCanton)" />
+						<listcell label="@load(each.parroquia.nombreParroquia)" />
+						<listcell label="@load(each.direccion)" />
+						<listcell label="@load(each.telefono)" />
+						<listcell label="@load(each.descripcionEmpresa)" />
+					</listitem>
+				</template>
+			</listbox>
+			<separator orient="vertical"/>
+		</hlayout>
+		<separator orient="horizontal"/>
+	</vlayout>
+</zk>

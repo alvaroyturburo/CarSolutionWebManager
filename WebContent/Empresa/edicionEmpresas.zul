@@ -1,0 +1,286 @@
+<?page title="Empresa" contentType="text/html;charset=UTF-8" automaticTimeout="false" ?>
+<zk>
+	<window id="winEmpresa" title="Edicion de Proyecto" border="normal"
+		height="82%" width="49%" position="center,center" closable="true"
+		contentStyle="overflow:auto" action="show: slideDown;hide: slideUp"
+		onClose="@command('salir')" apply="org.zkoss.bind.BindComposer" 
+        viewModel="@id('vm') @init('com.empresas.control.EdicionEmpresa')">
+		<vlayout>
+			<hbox align="center">
+				<button id="buttonAceptar" label="Guardar"
+					onClick="@command('guardar')" />
+				<separator orient="vertical" width="50px"/>
+				<label id="lblNota" value="Para agregar horarios y servicios se debe crear la empresa, despues editar"/>
+			</hbox>
+			<hbox hflex="1">
+				<tabbox  width="100%" height="620px">
+					<tabs>
+						<tab label="Datos y descripción"
+							closable="false" />
+						<tab label="Ubicación"
+							closable="false" />
+						<tab label="Atención"
+							closable="false" id="tabAtencion"/>
+						<tab label="Servicios"
+							closable="false" id="tabServicios"/>
+					</tabs>
+					<tabpanels>
+						<!-- Tab de registro de la parte de descripcion y estado del proyecto -->
+						<tabpanel >
+							<grid vflex="1">
+								<columns>
+									<column hflex="max" />
+								</columns>
+								<rows>
+									<row>
+										<label value="Nombre:" hflex="1"/>
+										<textbox constraint="no empty: debe ingresar el nombre" width="100%" 
+										value="@bind(vm.empresa.nombre)"/>
+									</row>
+									<row>
+										<label value="Tipo Empresa:" hflex="1"/>
+										<combobox model="@load(vm.tiposempresas)"
+												selectedItem="@bind(vm.empresa.tipoEmpresa)"
+												value="@load(vm.empresa.tipoEmpresa.descripcionTipoEmpresa)">
+												<template name="model">
+													<comboitem
+														label="@load(each.descripcionTipoEmpresa)" value="@load(each.descripcionTipoEmpresa)" />
+												</template>
+										</combobox>
+									</row>
+									<row>
+										<label value="Direccion:" />
+										<textbox constraint="no empty: debe ingresar el direccion" width="100%" 
+												 rows="3" value="@bind(vm.empresa.direccion)"/>
+									</row>
+									<row>
+										<label value="Telefono:" />
+										<textbox constraint="no empty: debe ingresar el telefono" width="100%"
+										value="@bind(vm.empresa.telefono)"/>
+									</row>
+									<row>
+										<label value="Descripcion:" />
+										<textbox constraint="no empty: debe ingresar el descripcion" width="100%" 
+												 rows="3" value="@bind(vm.empresa.descripcionEmpresa)"/>
+									</row>
+									<row >
+										<button id="btnUpload" 
+												        label="Subir Foto" 
+												        upload="true,maxsize=5192,accept=image/bmp|image/jpeg|image/gif" 
+												        onUpload="@command('subir', upEvent=event)"
+												        tooltiptext="Solo archivos de formato bmp, jpeg, gif, jpg de hasta 5MB"/>
+										
+										<image id="imgFoto" 
+												       content="@load(vm.empresa.fotoMostrarEdicion)"
+												       style="border:1px #cccccc solid;"/>
+										
+									</row>
+									
+								</rows>
+							</grid>	
+						</tabpanel>
+						
+						<!-- Tab de ubicacion del proyecto -->
+						<tabpanel>
+							<grid vflex="1">
+								<columns>
+									<column hflex="1"></column>
+						            <column hflex="3"></column>
+						            <column hflex="1"></column>
+						            <column hflex="3"></column>
+								</columns>
+								<rows>
+									<row>
+										<label value="Pais:" hflex="1"/>
+										<combobox model="@load(vm.paises)"
+											selectedItem="@bind(vm.paisSeleccionado)"
+											value="@load(vm.empresa.parroquia.canton.provincia.pai.nombrePais)"
+											onSelect="@command('cargarProvincias')"
+											id="cmbPaises">
+											<template name="model">
+												<comboitem
+													label="@load(each.nombrePais)" value="@load(each.nombrePais)" />
+											</template>
+										</combobox>
+										<label value="Provincia:" />
+										<combobox model="@load(vm.provincias)"
+											selectedItem="@bind(vm.provinciaSeleccionado)"
+											value="@load(vm.empresa.parroquia.canton.provincia.nombreProvincia)"
+											onSelect="@command('cargarCantones')"
+											id="cmbProvincias">
+											<template name="model">
+												<comboitem
+													label="@load(each.nombreProvincia)" value="@load(each.nombreProvincia)" />
+											</template>
+										</combobox>
+									</row>
+									<row>
+										<label value="Canton:" />
+										<combobox model="@load(vm.cantones)"
+											selectedItem="@bind(vm.cantonSeleccionado)"
+											value="@load(vm.empresa.parroquia.canton.nombreCanton)"
+											onSelect="@command('cargarParroquias')"
+											id="cmbCantones">
+											<template name="model">
+												<comboitem
+													label="@load(each.nombreCanton)" value="@load(each.nombreCanton)" />
+											</template>
+										</combobox>
+										<label value="Parroquia:" />
+										<combobox model="@load(vm.parroquias)"
+											selectedItem="@bind(vm.empresa.parroquia)"
+											value="@load(vm.empresa.parroquia.nombreParroquia)"
+											id="cmbParroquias">
+											<template name="model">
+												<comboitem
+													label="@load(each.nombreParroquia)" value="@load(each.nombreParroquia)" />
+											</template>
+										</combobox>
+									</row>								
+								</rows>
+							</grid>	
+							<div vflex="6">
+								<div>
+								    <script type="text/javascript"
+								        content="zk.googleAPIkey='AIzaSyCh3GQ3xUJmVPGZpXTKiOpWAhBQEC05gqY'" />
+								    <gmaps onMapClick="@command('getCoordenadas')" version="3.9" id="gmaps" width="100%" height="400px" showSmallCtrl="true" zoom="10" lng="-80.670817" lat="-2.182654">
+								     	
+								    </gmaps>
+								</div>
+								<div>
+								<grid>
+								        <rows>
+								            <row>
+								                <label value="Latitude:" />
+								                <textbox id="doblelatitude" hflex="1" value="@bind(vm.empresa.latitud)"/>
+								                <label value="Longitude:" /> 
+								                <textbox id="doblelongitude" hflex="1" value="@bind(vm.empresa.longitud)"/>
+								            </row>
+								        </rows>
+								    </grid>
+								</div>
+							</div>
+						</tabpanel>
+						
+						<!-- Tab de atencion de la empresa -->
+						<tabpanel id="tabpanelAtencion">
+						<separator orient="horizontal" width="10px"/>
+							<button id="btnHorarioEditar" label="Editar horarios"
+									onClick="@command('editarHorarios')" />
+							<separator orient="vertical" width="10px"/>
+							<button id="btnHorarioGuardar" label="Guardar horarios"
+									onClick="@command('guardarHorarios')" />
+						<separator orient="horizontal" width="130px" />
+						<grid id="gridHorarios">
+					        <auxhead>
+					            <auxheader colspan="5" label="Horario de atencion" />
+					        </auxhead>
+					        <columns>
+					            <column hflex="1">Registrar</column>
+					            <column hflex="3">Dia</column>
+					            <column hflex="3">Inicio</column>
+					            <column hflex="3">Fin</column>
+					        </columns>
+								<rows sclass="narrow">
+							            <row>
+							                <checkbox id="ckL" />
+							                <label id="lbL" value="Lunes"/>
+							                <timebox id="tbiL" format="short"/>
+							                <timebox id="tbfL" format="short" constraint="@load(vm.validaHoraL)"/>
+							                </row>
+							            <row>
+							                <checkbox id="ckM" />
+							                <label id="lbM" value="Martes"/>
+							                <timebox id="tbiM" format="short"/>
+							                <timebox id="tbfM" format="short" constraint="@load(vm.validaHoraM)"/>
+							                </row>
+							            <row>
+							                <checkbox id="ckMI" />
+							                <label id="lbMI" value="Miercoles"/>
+							                <timebox id="tbiMI" format="short"/>
+							                <timebox id="tbfMI" format="short" constraint="@load(vm.validaHoraMI)"/>
+							                </row>
+							            <row>
+							                <checkbox id="ckJ" />
+							                <label id="lbJ" value="Jueves"/>
+							                <timebox id="tbiJ" format="short"/>
+							                <timebox id="tbfJ" format="short" constraint="@load(vm.validaHoraJ)"/>
+							                </row>
+							            <row>
+							                <checkbox id="ckV" />
+							                <label id="lbV" value="Viernes"/>
+							                <timebox id="tbiV" format="short"/>
+							                <timebox id="tbfV" format="short" constraint="@load(vm.validaHoraV)"/>
+							            </row>
+							            <row>
+							                <checkbox id="ckS" />
+							                <label id="lbS" value="Sabado"/>
+							                <timebox id="tbiS" format="short"/>
+							                <timebox id="tbfS" format="short" constraint="@load(vm.validaHoraS)"/>
+							            </row>
+							            <row>
+							                <checkbox id="ckD" />
+							                <label id="lbD" value="Domingo"/>
+							                <timebox id="tbiD" format="short"/>
+							                <timebox id="tbfD" format="short" constraint="@load(vm.validaHoraD)"/>
+							            </row>
+								</rows>
+							</grid>
+						</tabpanel >
+						
+						<!-- Tab servicios de la empresa -->
+						<tabpanel id="tabpanelServicios">
+							<vlayout vflex="1" hflex="1">
+								<hlayout vflex="1" hflex="1">
+									<separator orient="vertical" width="10px"/>
+									<button label="Agregar Seleccionados"
+										onClick="@command('agregar')" />
+									<separator orient="vertical" width="130px"/>
+									<button label="Quitar Seleccionados"
+										onClick="@command('quitar')" />
+								</hlayout>
+								<hlayout vflex="10" hflex="1">
+								<separator orient="vertical"/>
+									<listbox model="@load(vm.compDisponibles)"
+										 hflex="1" vflex="1">
+										<listhead>
+											<listheader width="50px" />
+											<listheader label="Servicios Disponible"/>
+										</listhead>
+										<template name="model">
+											<listitem>
+												<listcell>
+													<checkbox checked="@bind(each.seleccionado)"/>
+												</listcell>
+												<listcell label="@load(each.servicio.descripcionServicio)" />
+											</listitem>
+										</template>
+									</listbox>
+								<separator orient="vertical"/>
+									<listbox model="@load(vm.compRegistrados)"
+										 hflex="1" vflex="1">
+										<listhead>
+											<listheader width="50px" />
+											<listheader label="Servicios Registrados"/>
+										</listhead>
+										<template name="model">
+											<listitem>
+												<listcell>
+													<checkbox checked="@bind(each.seleccionado)"/>
+												</listcell>
+												<listcell label="@load(each.servicio.descripcionServicio)" />
+											</listitem>
+										</template>
+									</listbox>
+								<separator orient="vertical"/>
+								</hlayout>
+							</vlayout>
+							
+						</tabpanel>
+					</tabpanels>
+				</tabbox>
+
+			</hbox>
+		</vlayout>
+	</window>
+</zk>
